@@ -36,17 +36,21 @@ public class FasterAnimationsContainer{
     // Listeners
     private OnAnimationStoppedListener mOnAnimationStoppedListener;
     private OnAnimationFrameChangedListener mOnAnimationFrameChangedListener;
+    
+    private Activity mActivity;
 
-    private FasterAnimationsContainer(ImageView imageView) {
+    private FasterAnimationsContainer(ImageView imageView, Activity act) {
         init(imageView);
+        
+        mActivity = act; //needed for get resources without running in UI thread method
     };
 
     // single instance procedures
     private static FasterAnimationsContainer sInstance;
 
-    public static FasterAnimationsContainer getInstance(ImageView imageView) {
+    public static FasterAnimationsContainer getInstance(ImageView imageView, Activity act) {
         if (sInstance == null)
-            sInstance = new FasterAnimationsContainer(imageView);
+            sInstance = new FasterAnimationsContainer(imageView,act);
         return sInstance;
     }
 
@@ -216,6 +220,9 @@ public class FasterAnimationsContainer{
         @Override
         protected Drawable doInBackground(Integer... params) {
             return mImageView.getContext().getResources().getDrawable(params[0]);
+            
+            //When you use support library you can use this without UI thread and deprecated methods
+            //return ResourcesCompat.getDrawable(mActivity.getResources(),params[0],null);
         }
 
         @Override
